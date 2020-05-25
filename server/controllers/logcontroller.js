@@ -39,7 +39,7 @@ router.post("/", (req, res) => {
 router.get("/:id", (req, res) => {
   Log.findOne({
     where: {
-      owner_id: req.params.id,
+      id: req.params.id,
     },
   })
     .then((log) =>
