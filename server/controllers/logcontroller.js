@@ -2,7 +2,11 @@ const router = require("express").Router();
 const Log = require("../db").import("../models/log");
 
 router.get("/", (req, res) => {
-  Log.findAll()
+  Log.findAll({
+    where: {
+      owner_id: req.user.id,
+    },
+  })
     .then((logs) =>
       res.status(200).json({
         logs: logs,
@@ -17,11 +21,12 @@ router.get("/", (req, res) => {
 
 //POST
 router.post("/", (req, res) => {
+  console.log("req.user.id", req.user.id);
   const logFromRequest = {
     description: req.body.description,
     definition: req.body.definition,
     result: req.body.result,
-    owner_id: req.body.owner_id,
+    owner_id: req.user.id,
   };
   Log.create(logFromRequest)
     .then((log) =>
@@ -55,7 +60,7 @@ router.get("/:id", (req, res) => {
 });
 //UPDATE
 router.put("/:id", (req, res) => {
-  Log.update(req.body, {
+  Log.update(req.body.log, {
     where: {
       id: req.params.id,
     },

@@ -5,27 +5,22 @@ const jwt = require("jsonwebtoken");
 
 //signup
 router.post("/register", (req, res) => {
+  console.log(req.body);
   User.create({
     userName: req.body.userName,
     passwordhash: bcrypt.hashSync(req.body.passwordhash, 10),
-  })
-    .then(
-      (createSuccess = (user) => {
-        let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-          expiresIn: 60 * 60 * 24,
-        });
-        res.json({
-          user: user,
-          message: "user created",
-          sessionToken: token,
-        });
-      })((createError = (err) => res.send(500, err)))
-    )
-    .catch((err) => {
-      res.status(500).json({
-        error: err,
+  }).then(
+    (createSuccess = (user) => {
+      let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+        expiresIn: 60 * 60 * 24,
       });
-    });
+      res.json({
+        user: user,
+        message: "user created",
+        sessionToken: token,
+      });
+    })((createError = (err) => res.send(500, err)))
+  );
 });
 
 router.post("/login", (req, res) => {
